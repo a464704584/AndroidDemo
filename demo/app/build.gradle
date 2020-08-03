@@ -63,4 +63,12 @@ dependencies {
     implementation('com.google.android.material:material:1.3.0-alpha01')
     implementation('androidx.recyclerview:recyclerview:1.2.0-alpha04')
     implementation('com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4')
+
+
+
+    implementation ('com.github.ivbaranov:rxbluetooth2:2.1.1')
+    implementation 'com.github.duoshine:AndroidBluetoothPro:1.8'
+
+
+    
 }

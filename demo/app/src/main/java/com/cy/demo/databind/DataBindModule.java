@@ -45,7 +45,6 @@ public class DataBindModule {
         if (params.get(key) == null) {
             params.put(key, value);
         }
-        Log.i("ttttttttttt",""+params.toString());
         return this;
     }
 

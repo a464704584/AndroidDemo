@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">demo</string>
+    <string name="bl_open">开启蓝牙</string>
+    <string name="bl_close">关闭蓝牙</string>
 </resources>

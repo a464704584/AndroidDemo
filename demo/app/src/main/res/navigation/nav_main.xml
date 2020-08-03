@@ -15,11 +15,29 @@
         <action
             android:id="@+id/action_mainFragment_to_BLFragment"
             app:destination="@id/BLFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_NFCFragment"
+            app:destination="@id/NFCFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_stepFragment"
+            app:destination="@id/stepFragment" />
     </fragment>
     <fragment
         android:id="@+id/BLFragment"
         android:name="com.cy.demo.fragments.BLFragment"
         android:label="BLFragment"
         tools:layout="@layout/fragment_bl"
+        />
+    <fragment
+        android:id="@+id/NFCFragment"
+        android:name="com.cy.demo.fragments.NFCFragment"
+        android:label="NFCFragment"
+        tools:layout="@layout/fragment_nfc"
+        />
+    <fragment
+        android:id="@+id/stepFragment"
+        android:name="com.cy.demo.fragments.StepFragment"
+        android:label="StepFragment"
+        tools:layout="@layout/fragment_step"
         />
 </navigation>
