@@ -1,6 +1,5 @@
 package com.cy.demo.fragments;
 
-import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +15,7 @@ import androidx.annotation.Nullable;
 import com.cy.demo.BR;
 import com.cy.demo.R;
 import com.cy.demo.base.BaseFragment;
+import com.cy.demo.base.BaseMainFragment;
 import com.cy.demo.databind.DataBindModule;
 import com.cy.demo.viewModule.NFCViewModule;
 

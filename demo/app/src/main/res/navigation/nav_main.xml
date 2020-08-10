@@ -14,13 +14,32 @@
         >
         <action
             android:id="@+id/action_mainFragment_to_BLFragment"
-            app:destination="@id/BLFragment" />
+            app:destination="@id/BLFragment"
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left"
+            />
         <action
             android:id="@+id/action_mainFragment_to_NFCFragment"
-            app:destination="@id/NFCFragment" />
+            app:destination="@id/NFCFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left"
+            />
         <action
             android:id="@+id/action_mainFragment_to_stepFragment"
-            app:destination="@id/stepFragment" />
+            app:destination="@id/stepFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left"
+            />
     </fragment>
     <fragment
         android:id="@+id/BLFragment"

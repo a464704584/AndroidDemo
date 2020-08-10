@@ -12,13 +12,25 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.cy.demo.BR;
+import com.cy.demo.MyApplication;
 import com.cy.demo.R;
 import com.cy.demo.base.BaseFragment;
+import com.cy.demo.base.BaseMainFragment;
 import com.cy.demo.databind.DataBindModule;
+import com.cy.demo.room.BaseDB;
+import com.cy.demo.room.StepBean;
+import com.cy.demo.room.StepDao;
+import com.cy.demo.viewModule.StepViewModule;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
-import duoshine.rxandroidbluetooth.bluetoothprofile.BluetoothWriteProfile;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @创建者 CY
@@ -28,14 +40,24 @@ import duoshine.rxandroidbluetooth.bluetoothprofile.BluetoothWriteProfile;
 public class StepFragment extends BaseFragment implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor sensor;
+
+    private StepViewModule stepViewModule;
+
+    private BaseDB db;
+    private StepDao stepDao;
+    private StepBean stepBean;
+
+    private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMdd");
+
     @Override
     protected void initVariable() {
-
+        stepViewModule=getViewModule(StepViewModule.class);
     }
 
     @Override
     protected DataBindModule initDataBindModule() {
-        return new DataBindModule(R.layout.fragment_step);
+        return new DataBindModule(R.layout.fragment_step)
+                .addParam(BR.viewModule,stepViewModule);
     }
 
     @Override
@@ -43,6 +65,24 @@ public class StepFragment extends BaseFragment implements SensorEventListener {
         super.onViewCreated(view, savedInstanceState);
         sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
         sensor=sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        db= MyApplication.getDb();
+        stepDao=db.getStepDao();
+
+        stepDao.list().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<StepBean>>() {
+                    @Override
+                    public void accept(List<StepBean> stepBeans) throws Exception {
+                        for (StepBean item:stepBeans){
+                            Log.i(TAG,"item"+item);
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                    }
+                });
 
     }
 
@@ -58,12 +98,24 @@ public class StepFragment extends BaseFragment implements SensorEventListener {
         if (sensorManager!=null){
             sensorManager.unregisterListener(this);
         }
+        stepDao.insert(stepBean);
+
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType()==Sensor.TYPE_STEP_COUNTER){
-            Log.e(TAG, "onSensorChanged: 当前步数：" + event.values[0]);
+            if (stepBean==null){
+                stepBean=stepDao.selectByPrimary(simpleDateFormat.format(new Date()));
+                if (stepBean==null){
+                    stepBean=new StepBean();
+                    stepBean.setDate(simpleDateFormat.format(new Date()));
+                    stepDao.insert(stepBean);
+                }
+            }else {
+                stepBean.setNum(stepBean.getNum()+1);
+            }
+            stepViewModule.stepTotalNum.set(stepBean.getNum());
         }
     }
 
@@ -75,6 +127,5 @@ public class StepFragment extends BaseFragment implements SensorEventListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
     }
 }

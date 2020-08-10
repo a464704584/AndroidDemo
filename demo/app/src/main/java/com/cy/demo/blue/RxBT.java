@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
@@ -51,15 +52,32 @@ import static android.os.Build.VERSION.SDK_INT;
  * @描述 天逢门下，降魔大仙，摧魔伐恶，鹰犬当先，二将闻召，立至坛前，依律道奉令，神功帝宣，魔妖万鬼，诛专战无盖，太上圣力，浩荡无边，急急奉北帝律令
  */
 public class RxBT {
+    private final UUID UUID_DES2 = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
-    BluetoothAdapter bluetoothAdapter;
-    Context context;
+    private BluetoothGatt gatt;
 
-    public RxBT(Context context) {
+    private BluetoothAdapter bluetoothAdapter;
+    private Context context;
+
+    private UUID serviceUuid;
+
+    /**
+     * 通知uuid
+     */
+    private UUID notifyUuid;
+
+    /**
+     * 写uuid
+     */
+    private UUID writeUuid;
+
+    private RxBT(Context context, UUID serviceUuid, UUID notifyUuid, UUID writeUuid) {
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         this.context = context;
+        this.serviceUuid = serviceUuid;
+        this.notifyUuid = notifyUuid;
+        this.writeUuid = writeUuid;
     }
-
 
     /**
      * 该设备是否支持蓝牙
@@ -441,7 +459,7 @@ public class RxBT {
         return Observable.create(new ObservableOnSubscribe<BTResponse>() {
             @Override
             public void subscribe(ObservableEmitter<BTResponse> emitter) throws Exception {
-                 device.connectGatt(context, false, new BluetoothGattCallback() {
+                 gatt=device.connectGatt(context, autoConnect, new BluetoothGattCallback() {
                     @Override
                     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
                         super.onConnectionStateChange(gatt, status, newState);
@@ -449,6 +467,22 @@ public class RxBT {
                     }
 
                 });
+            }
+        });
+    }
+
+    public Observable<BTResponse> write(byte[] bytes){
+        return Observable.create(new ObservableOnSubscribe<BTResponse>() {
+            @Override
+            public void subscribe(ObservableEmitter<BTResponse> emitter) throws Exception {
+                BluetoothGattService service=gatt.getService(serviceUuid);
+                if (service==null){
+                    emitter.onError(new Throwable("找不过该服务"));
+                    return;
+                }
+
+
+
             }
         });
     }
@@ -660,6 +694,51 @@ public class RxBT {
                 bluetoothDevice.fetchUuidsWithSdp();
             }
         });
+    }
+
+    public static class Builder{
+
+        private Context mContext;
+        private UUID serviceUuid;
+
+        /**
+         * 通知uuid
+         */
+        private UUID notifyUuid;
+
+        /**
+         * 写uuid
+         */
+        private UUID writeUuid;
+
+        public Builder(Context context){
+            mContext=context;
+        }
+
+        public Builder setServiceUUID(UUID uuid){
+            serviceUuid=uuid;
+            return this;
+        }
+
+        public Builder setNotifyUUID(UUID uuid){
+            notifyUuid=uuid;
+            return this;
+        }
+
+
+        public Builder setWriteUUID(UUID uuid){
+            serviceUuid=uuid;
+            return this;
+        }
+
+
+        public RxBT build(){
+            return new RxBT(mContext,serviceUuid,notifyUuid,writeUuid);
+
+        }
+
+
+
     }
 
 

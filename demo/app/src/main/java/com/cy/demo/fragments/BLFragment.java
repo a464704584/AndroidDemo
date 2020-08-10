@@ -3,19 +3,9 @@ package com.cy.demo.fragments;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothGattService;
-import android.bluetooth.BluetoothProfile;
-import android.bluetooth.BluetoothSocket;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 
@@ -26,34 +16,24 @@ import androidx.core.app.ActivityCompat;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.cy.demo.BR;
-import com.cy.demo.MainActivity;
 import com.cy.demo.R;
 import com.cy.demo.base.BaseFragment;
+import com.cy.demo.base.BaseMainFragment;
 import com.cy.demo.bean.BlueDeviceItem;
-import com.cy.demo.bean.ModuleItem;
 import com.cy.demo.blue.BTResponse;
 import com.cy.demo.blue.BtPredicate;
 import com.cy.demo.blue.RxBT;
 import com.cy.demo.databind.BaseBindAdapter;
 import com.cy.demo.databind.DataBindModule;
 import com.cy.demo.viewModule.BLViewModule;
-import com.github.ivbaranov.rxbluetooth.RxBluetooth;
-import com.github.ivbaranov.rxbluetooth.events.ConnectionStateEvent;
-import com.github.ivbaranov.rxbluetooth.events.ServiceEvent;
 //import com.github.ivbaranov.rxbluetooth.predicates.BtPredicate;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
 import duoshine.rxandroidbluetooth.BluetoothController;
 import duoshine.rxandroidbluetooth.BluetoothWorker;
-import duoshine.rxandroidbluetooth.bluetoothprofile.BluetoothWriteProfile;
+import duoshine.rxandroidbluetooth.bluetoothprofile.BluetoothConnectProfile;
 import duoshine.rxandroidbluetooth.observable.Response;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -72,17 +52,15 @@ public class BLFragment extends BaseFragment {
     private BLViewModule blViewModule;
     private RxBT rxBluetooth;
     private BaseBindAdapter<BlueDeviceItem> bindAdapter;
-//    public final static UUID UUID_SERVICE = UUID.fromString("0000fee7-0000-1000-8000-00805f9b34fb");
-//    public final static UUID UUID_WRITE = UUID.fromString("000036F5-0000-1000-8000-00805f9b34fb");
-//    public final static UUID UUID_READ = UUID.fromString("000036f6-0000-1000-8000-00805f9b34fb");
-public final static UUID UUID_WRITE = UUID.fromString("0000ffe1-0000-1000-8000-00805f9b34fb");
-    public final static UUID UUID_SERVICE = UUID.fromString("0000ffe0-0000-1000-8000-00805f9b34fb");
-    public final static UUID UUID_READ = UUID.fromString("0000ffe2-0000-1000-8000-00805f9b34fb");
-    private BluetoothGattCharacteristic characteristicWrite;
-    private BluetoothGattCharacteristic characteristicRead;
-    private BluetoothGatt bluetoothGatt;
+
     private BluetoothWorker bluetoothWorker;
-    public final static UUID UUID_DES2 = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
+    public final static UUID UUID_SERVICE = UUID.fromString("0000fee7-0000-1000-8000-00805f9b34fb");
+    public final static UUID UUID_WRITE = UUID.fromString("000036F5-0000-1000-8000-00805f9b34fb");
+    public final static UUID UUID_READ = UUID.fromString("000036f6-0000-1000-8000-00805f9b34fb");
+//    public final static UUID UUID_WRITE = UUID.fromString("0000ffe1-0000-1000-8000-00805f9b34fb");
+//    public final static UUID UUID_SERVICE = UUID.fromString("0000ffe0-0000-1000-8000-00805f9b34fb");
+//    public final static UUID UUID_READ = UUID.fromString("0000ffe2-0000-1000-8000-00805f9b34fb");
+//    public final static UUID UUID_DES2 = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
     @Override
     protected void initVariable() {
@@ -114,47 +92,21 @@ public final static UUID UUID_WRITE = UUID.fromString("0000ffe1-0000-1000-8000-0
                 BluetoothDevice device = bindAdapter.getData().get(position).device.get();
                 Log.i(TAG,"device "+device.getAddress());
 
-
-                rxBluetooth.connect(getContext(),false,device)
-                        .subscribe(new Consumer<BTResponse>() {
-                            @Override
-                            public void accept(BTResponse btResponse) throws Exception {
-                                Log.i(TAG,"connect: "+btResponse);
-
-                                if (btResponse.code==2){
-//                                    rxBluetooth.write();
-                                }
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                throwable.printStackTrace();
-                            }
-                        });
-
-////                bluetoothGatt=device.connectGatt(getContext(),false,bluetoothGattCallback);
-//                bluetoothWorker.connect(device.getAddress())
-//                        .subscribe(new Consumer<Response>() {
+//                rxBluetooth.connect(getContext(),false,device)
+//                        .subscribe(new Consumer<BTResponse>() {
 //                            @Override
-//                            public void accept(Response response) throws Exception {
-//                                Log.i(TAG, "connect " + response);
-//                                if (response.getCode() == 4) {
-//                                    byte[] c = new byte[16];
-//                                    c[0] = 0x06;
-//                                    c[1] = 0x01;
-//                                    c[2] = 0x01;
-//                                    c[3] = 0x01;
-//                                        bluetoothWorker.writeOnce(c).subscribe(new Consumer<Response>() {
-//                                            @Override
-//                                            public void accept(Response response) throws Exception {
-//                                                Log.i(TAG, "write " + response);
-//                                            }
-//                                        }, new Consumer<Throwable>() {
-//                                            @Override
-//                                            public void accept(Throwable throwable) throws Exception {
-//                                                throwable.printStackTrace();
-//                                            }
-//                                        });
+//                            public void accept(BTResponse btResponse) throws Exception {
+//                                Log.i(TAG,"connect: "+btResponse);
+//
+//                                if (btResponse.code==2){
+//                                    byte[] c = new byte[20];
+//                                    c[0] = 0x10;
+//                                    c[1] = 0x5f;
+//                                    c[2] = 0x28;
+//                                    c[3] = (byte) 0xfd;
+//                                    c[17]= (byte) 0x97;
+//                                    c[18]=0x26;
+//                                    c[19]=0x2d;
 //                                }
 //                            }
 //                        }, new Consumer<Throwable>() {
@@ -163,6 +115,48 @@ public final static UUID UUID_WRITE = UUID.fromString("0000ffe1-0000-1000-8000-0
 //                                throwable.printStackTrace();
 //                            }
 //                        });
+//                BluetoothConnectProfile
+                bluetoothWorker=new BluetoothController.Builder(getContext())
+                        .setNotifyUuid(UUID_READ)
+                        .setWriteUuid(UUID_WRITE)
+                        .setServiceUuid(UUID_SERVICE)
+                        .build();
+////                bluetoothGatt=device.connectGatt(getContext(),false,bluetoothGattCallback);
+                bluetoothWorker.connect(device.getAddress())
+                        .subscribe(new Consumer<Response>() {
+                            @Override
+                            public void accept(Response response) throws Exception {
+                                Log.i(TAG, "connect " + response);
+                                if (response.getCode() == 4) {
+                                    byte[] c = new byte[20];
+                                    c[0] = 0x0c;
+                                    c[1] = 0x5f;
+                                    c[2] = 0x2a;
+                                    c[3] = 0x63;
+                                    c[4] = (byte) 0xab;
+                                    c[17]= (byte) 0xf9;
+                                    c[18]=0x21;
+                                    c[19]=0x0b;
+
+                                        bluetoothWorker.writeOnce(c).subscribe(new Consumer<Response>() {
+                                            @Override
+                                            public void accept(Response response) throws Exception {
+                                                Log.i(TAG, "write " + response);
+                                            }
+                                        }, new Consumer<Throwable>() {
+                                            @Override
+                                            public void accept(Throwable throwable) throws Exception {
+                                                throwable.printStackTrace();
+                                            }
+                                        });
+                                }
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                throwable.printStackTrace();
+                            }
+                        });
 
             }
         });
@@ -183,15 +177,13 @@ public final static UUID UUID_WRITE = UUID.fromString("0000ffe1-0000-1000-8000-0
     }
 
     private void initBlueTooth() {
-        rxBluetooth = new RxBT(activity);
+        rxBluetooth = new RxBT.Builder(getContext())
+                .setServiceUUID(UUID_SERVICE)
+                .setWriteUUID(UUID_WRITE)
+                .setNotifyUUID(UUID_READ)
+                .build();
         blViewModule.isBluetoothAvailable.set(rxBluetooth.isBluetoothAvailable());
         blViewModule.isBluetoothEnabled.set(rxBluetooth.isBluetoothEnabled());
-
-        bluetoothWorker = new BluetoothController.Builder(getContext())
-                .setServiceUuid(UUID_SERVICE)
-                .setWriteUuid(UUID_WRITE)
-                .setNotifyUuid(UUID_READ)
-                .build();
 
         rxBluetooth.observeBluetoothState()
                 .observeOn(AndroidSchedulers.mainThread())

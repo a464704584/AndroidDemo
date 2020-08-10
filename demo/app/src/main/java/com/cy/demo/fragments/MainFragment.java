@@ -1,25 +1,22 @@
 package com.cy.demo.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.util.SparseArray;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.cy.demo.BR;
 import com.cy.demo.R;
 import com.cy.demo.base.BaseFragment;
+import com.cy.demo.base.BaseMainFragment;
 import com.cy.demo.bean.ModuleItem;
 import com.cy.demo.databind.BaseBindAdapter;
 import com.cy.demo.databind.DataBindModule;
 import com.cy.demo.viewModule.MainViewModule;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +29,7 @@ import javax.crypto.spec.SecretKeySpec;
  * @创建时间 2020/7/29 17:26
  * @描述 天逢门下，降魔大仙，摧魔伐恶，鹰犬当先，二将闻召，立至坛前，依律道奉令，神功帝宣，魔妖万鬼，诛专战无盖，太上圣力，浩荡无边，急急奉北帝律令
  */
-public class MainFragment extends BaseFragment {
+public class MainFragment extends BaseMainFragment {
     private MainViewModule mainViewModule;
     private BaseBindAdapter<ModuleItem> bindAdapter;
 
@@ -60,18 +57,6 @@ public class MainFragment extends BaseFragment {
                 nav().navigate(moduleItem.navId);
             }
         });
-
-
-        byte[] c = new byte[16];
-        c[0] = 0x06;
-        c[1] = 0x01;
-        c[2] = 0x01;
-        c[3] = 0x01;
-
-        byte [] a=Encrypt(c);
-        Log.i(TAG,"aaa:"+new BigInteger(c).toString(16));
-        Log.i(TAG,"aaa:"+new BigInteger(a).toString(16));
-
     }
 
     public byte[] Encrypt(byte[] sSrc) {
