@@ -40,6 +40,23 @@
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left"
             />
+        <action
+            android:id="@+id/action_mainFragment_to_rxJavaFragment"
+            app:destination="@id/rxJavaFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left"/>
+        <action
+            android:id="@+id/action_mainFragment_to_UIDemoFragment"
+            app:destination="@id/UIDemoFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left"
+            />
     </fragment>
     <fragment
         android:id="@+id/BLFragment"
@@ -59,4 +76,22 @@
         android:label="StepFragment"
         tools:layout="@layout/fragment_step"
         />
+    <fragment
+        android:id="@+id/rxJavaFragment"
+        android:name="com.cy.demo.fragments.RxJavaFragment"
+        android:label="RxJavaFragment"
+        tools:layout="@layout/fragment_rxjava"
+        />
+    <fragment
+        android:id="@+id/UIDemoFragment"
+        android:name="com.cy.demo.fragments.UIDemoFragment"
+        android:label="UIDemoFragment" >
+        <action
+            android:id="@+id/action_UIDemoFragment_to_UI1Fragment"
+            app:destination="@id/UI1Fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/UI1Fragment"
+        android:name="com.cy.demo.fragments.UI1Fragment"
+        android:label="UI1Fragment" />
 </navigation>

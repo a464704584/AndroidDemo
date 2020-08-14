@@ -8,6 +8,7 @@ import androidx.room.Query;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 
 /**
  * @创建者 CY
@@ -25,7 +26,7 @@ public interface StepDao {
 
 
     @Query("SELECT * FROM step")
-    Flowable<List<StepBean>> list();
+    Observable<List<StepBean>> list();
 
 
 }

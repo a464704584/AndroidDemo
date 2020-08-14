@@ -13,7 +13,6 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-
     }
 
     buildTypes {
@@ -33,6 +32,11 @@ android {
         dataBinding = true
 // for view binding :
 // viewBinding = true
+    }
+    externalNativeBuild {
+        cmake {
+            path file('CMakeLists.txt')
+        }
     }
 }
 
@@ -84,6 +88,7 @@ dependencies {
 
     implementation ('com.github.ivbaranov:rxbluetooth2:2.1.1')
     implementation 'com.github.duoshine:AndroidBluetoothPro:1.8'
+
 
 
     implementation "androidx.paging:paging-runtime:$paging_version" // For Kotlin use paging-runtime-ktx

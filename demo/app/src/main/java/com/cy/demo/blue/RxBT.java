@@ -54,7 +54,7 @@ import static android.os.Build.VERSION.SDK_INT;
 public class RxBT {
     private final UUID UUID_DES2 = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
-    private BluetoothGatt gatt;
+//    private BluetoothGatt gatt;
 
     private BluetoothAdapter bluetoothAdapter;
     private Context context;
@@ -96,6 +96,8 @@ public class RxBT {
     public boolean isBluetoothEnabled() {
         return bluetoothAdapter.isEnabled();
     }
+
+
 
 
     /**
@@ -449,43 +451,12 @@ public class RxBT {
     }
 
 
-    /**
-     * 低功耗通信连接
-     * @param context
-     * @param device
-     * @return
-     */
-    public Observable<BTResponse> connect(Context context,boolean autoConnect,BluetoothDevice device){
-        return Observable.create(new ObservableOnSubscribe<BTResponse>() {
-            @Override
-            public void subscribe(ObservableEmitter<BTResponse> emitter) throws Exception {
-                 gatt=device.connectGatt(context, autoConnect, new BluetoothGattCallback() {
-                    @Override
-                    public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-                        super.onConnectionStateChange(gatt, status, newState);
-                        emitter.onNext(new BTResponse(newState));
-                    }
-
-                });
-            }
-        });
+    public ConnectObservable connect(String address){
+        return ConnectObservable.create(context,bluetoothAdapter,address,serviceUuid,writeUuid,notifyUuid);
     }
 
-    public Observable<BTResponse> write(byte[] bytes){
-        return Observable.create(new ObservableOnSubscribe<BTResponse>() {
-            @Override
-            public void subscribe(ObservableEmitter<BTResponse> emitter) throws Exception {
-                BluetoothGattService service=gatt.getService(serviceUuid);
-                if (service==null){
-                    emitter.onError(new Throwable("找不过该服务"));
-                    return;
-                }
 
 
-
-            }
-        });
-    }
 
     /**
      * Opens {@link BluetoothServerSocket}, listens for a single connection request, releases socket

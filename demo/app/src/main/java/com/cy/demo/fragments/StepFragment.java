@@ -29,6 +29,7 @@ import java.util.List;
 
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -46,7 +47,7 @@ public class StepFragment extends BaseFragment implements SensorEventListener {
     private BaseDB db;
     private StepDao stepDao;
     private StepBean stepBean;
-
+    private Disposable disposable;
     private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMdd");
 
     @Override
@@ -67,12 +68,13 @@ public class StepFragment extends BaseFragment implements SensorEventListener {
         sensor=sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         db= MyApplication.getDb();
         stepDao=db.getStepDao();
-
-        stepDao.list().subscribeOn(Schedulers.io())
+        Log.i(TAG,"onViewCreated");
+        disposable=stepDao.list().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<StepBean>>() {
                     @Override
                     public void accept(List<StepBean> stepBeans) throws Exception {
+                        Log.i(TAG,"asdasdasd");
                         for (StepBean item:stepBeans){
                             Log.i(TAG,"item"+item);
                         }
@@ -125,7 +127,10 @@ public class StepFragment extends BaseFragment implements SensorEventListener {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onStop() {
+        super.onStop();
+        if (!disposable.isDisposed()){
+            disposable.dispose();
+        }
     }
 }

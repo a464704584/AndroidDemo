@@ -4,12 +4,16 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
+import android.content.Context;
 
 import java.util.LinkedList;
 import java.util.UUID;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
@@ -21,7 +25,7 @@ import io.reactivex.disposables.Disposable;
 public class BluetoothCallBack extends BluetoothGattCallback implements Disposable {
     private final String TAG="BluetoothCallBack";
 
-    private Observer<BTResponse> observer;
+//    private Observer<BTResponse> observer;
 
     private UUID serviceUuid;
 
@@ -73,8 +77,13 @@ public class BluetoothCallBack extends BluetoothGattCallback implements Disposab
      */
     private boolean isConnect;
 
-    private BluetoothCallBack create(Observer<BTResponse> observer,UUID serviceUuid,UUID writeUuid,UUID notifyUuid,boolean isAutoConnect){
-        this.observer=observer;
+
+
+    private BluetoothGattService gattService;
+
+
+    public BluetoothCallBack create(Observer<BTResponse> observer,UUID serviceUuid,UUID writeUuid,UUID notifyUuid,boolean isAutoConnect){
+//        this.observer=observer;
         this.serviceUuid=serviceUuid;
         this.writeUuid=writeUuid;
         this.notifyUuid=notifyUuid;
@@ -89,8 +98,8 @@ public class BluetoothCallBack extends BluetoothGattCallback implements Disposab
 
 
     private BluetoothCallBack get(Observer<BTResponse> observer){
-        this.observer=observer;
-        observer.onSubscribe(this);
+//        this.observer=observer;
+//        observer.onSubscribe(this);
         return this;
     }
 
@@ -103,7 +112,9 @@ public class BluetoothCallBack extends BluetoothGattCallback implements Disposab
     @Override
     public void dispose() {
         isConnect=false;
-        observer=null;
+//        observer=null;
+        bluetoothGatt.close();
+        bluetoothGatt.disconnect();
     }
 
     @Override
@@ -190,10 +201,35 @@ public class BluetoothCallBack extends BluetoothGattCallback implements Disposab
 
     }
 
+    /**
+     * 低功耗通信连接
+     * @param context
+     * @param device
+     * @return
+     */
+    public Observable<BTResponse> connect(Context context, boolean autoConnect, BluetoothDevice device){
+        return Observable.create(new ObservableOnSubscribe<BTResponse>() {
+            @Override
+            public void subscribe(ObservableEmitter<BTResponse> emitter) throws Exception {
+                bluetoothGatt=device.connectGatt(context, autoConnect,BluetoothCallBack.this);
+                gattService=bluetoothGatt.getService(serviceUuid);
+                writeCharacteristic=gattService.getCharacteristic(writeUuid);
+            }
+        });
+    }
 
+
+    public Observable<BTResponse> write(byte[] bytes){
+        return Observable.create(new ObservableOnSubscribe<BTResponse>() {
+            @Override
+            public void subscribe(ObservableEmitter<BTResponse> emitter) throws Exception {
+
+            }
+        });
+    }
 
     private void onNext(int status,byte[] bytes){
-        observer.onNext(new BTResponse(status,bytes));
+//        observer.onNext(new BTResponse(status,bytes));
     }
 
     private void onNext(int status){

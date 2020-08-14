@@ -11,7 +11,6 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.cy.demo.BR;
 import com.cy.demo.R;
 import com.cy.demo.base.BaseFragment;
-import com.cy.demo.base.BaseMainFragment;
 import com.cy.demo.bean.ModuleItem;
 import com.cy.demo.databind.BaseBindAdapter;
 import com.cy.demo.databind.DataBindModule;
@@ -20,32 +19,30 @@ import com.cy.demo.viewModule.MainViewModule;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-
 /**
  * @创建者 CY
- * @创建时间 2020/7/29 17:26
+ * @创建时间 2020/8/11 10:56
  * @描述 天逢门下，降魔大仙，摧魔伐恶，鹰犬当先，二将闻召，立至坛前，依律道奉令，神功帝宣，魔妖万鬼，诛专战无盖，太上圣力，浩荡无边，急急奉北帝律令
  */
-public class MainFragment extends BaseMainFragment{
+public class UIDemoFragment extends BaseFragment {
     private MainViewModule mainViewModule;
     private BaseBindAdapter<ModuleItem> bindAdapter;
 
 
+
     @Override
     protected void initVariable() {
+
         mainViewModule=getViewModule(MainViewModule.class);
         bindAdapter=new BaseBindAdapter<ModuleItem>(R.layout.item_module,getModules());
+
     }
 
     @Override
     protected DataBindModule initDataBindModule() {
-        return new DataBindModule(R.layout.fragment_main)
+        return new DataBindModule(R.layout.fragment_ui_demo)
                 .addParam(BR.adapter,bindAdapter);
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -61,11 +58,7 @@ public class MainFragment extends BaseMainFragment{
 
     private List<ModuleItem> getModules(){
         List<ModuleItem> data=new ArrayList<>();
-        data.add(new ModuleItem("蓝牙",R.id.action_mainFragment_to_BLFragment));
-        data.add(new ModuleItem("NFC",R.id.action_mainFragment_to_NFCFragment));
-        data.add(new ModuleItem("步数",R.id.action_mainFragment_to_stepFragment));
-        data.add(new ModuleItem("RxJava",R.id.action_mainFragment_to_rxJavaFragment));
-        data.add(new ModuleItem("UIDemo",R.id.action_mainFragment_to_UIDemoFragment));
+        data.add(new ModuleItem("UI1",R.id.action_UIDemoFragment_to_UI1Fragment));
         return data;
     }
 
