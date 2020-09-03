@@ -22,6 +22,7 @@ import com.cy.demo.databind.DataBindModule;
 import com.cy.demo.databinding.ItemModuleBinding;
 import com.cy.demo.viewModule.MainViewModule;
 
+import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

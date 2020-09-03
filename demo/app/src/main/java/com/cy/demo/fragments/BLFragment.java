@@ -33,14 +33,10 @@ import com.cy.demo.viewModule.BLViewModule;
 //import com.github.ivbaranov.rxbluetooth.predicates.BtPredicate;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.UUID;
-
-import duoshine.rxandroidbluetooth.BluetoothController;
 import duoshine.rxandroidbluetooth.BluetoothWorker;
-import duoshine.rxandroidbluetooth.bluetoothprofile.BluetoothConnectProfile;
-import duoshine.rxandroidbluetooth.observable.Response;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
@@ -62,7 +58,7 @@ public class BLFragment extends BaseFragment {
     public final static UUID UUID_SERVICE = UUID.fromString("0000fee7-0000-1000-8000-00805f9b34fb");
     public final static UUID UUID_WRITE = UUID.fromString("000036F5-0000-1000-8000-00805f9b34fb");
     public final static UUID UUID_READ = UUID.fromString("000036f6-0000-1000-8000-00805f9b34fb");
-
+    private Disposable disposable;
 //    BluetoothController
     @Override
     protected void initVariable() {
@@ -91,10 +87,14 @@ public class BLFragment extends BaseFragment {
         bindAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-//                BluetoothWriteProfile
+                if (disposable!=null&&!disposable.isDisposed()){
+                    disposable.dispose();
+                }
+
+
                 BluetoothDevice device = bindAdapter.getData().get(position).device.get();
                 Log.i(TAG,"device "+device.getAddress());
-               rxbt.connect(device.getAddress())
+               disposable=rxbt.connect(device.getAddress())
                        .observeOn(AndroidSchedulers.mainThread())
                        .subscribeOn(Schedulers.computation())
                        .subscribe(btResponse -> {
@@ -102,7 +102,6 @@ public class BLFragment extends BaseFragment {
                        },throwable -> {
                            throwable.printStackTrace();
                        });
-
             }
         });
     }
@@ -161,6 +160,10 @@ public class BLFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (disposable!=null&&!disposable.isDisposed()){
+            disposable.dispose();
+        }
+
         if (rxbt != null) {
             rxbt.cancelDiscovery();
         }

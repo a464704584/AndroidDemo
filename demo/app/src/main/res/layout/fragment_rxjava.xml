@@ -10,24 +10,12 @@
             type="com.cy.demo.fragments.RxJavaFragment" />
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         >
-        <EditText
+        <com.cy.demo.views.MyView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@={viewModule.text}"
-            />
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="@{()->method.click()}"
-            />
-        <NumberPicker
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-    </LinearLayout>
+            android:layout_height="match_parent"/>
+    </RelativeLayout>
 </layout>

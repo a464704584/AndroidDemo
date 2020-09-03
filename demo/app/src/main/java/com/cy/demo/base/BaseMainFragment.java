@@ -2,6 +2,7 @@ package com.cy.demo.base;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,6 +61,7 @@ public abstract class BaseMainFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.i(TAG,"onCreateView");
         dataBindModule=initDataBindModule();
         viewDataBinding= DataBindingUtil.inflate(inflater, dataBindModule.getLayout(), container, false);
         viewDataBinding.setLifecycleOwner(this);

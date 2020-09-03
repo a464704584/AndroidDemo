@@ -167,6 +167,7 @@ public class RxBT {
      * @return
      */
     public boolean cancelDiscovery() {
+
         return bluetoothAdapter.cancelDiscovery();
     }
 

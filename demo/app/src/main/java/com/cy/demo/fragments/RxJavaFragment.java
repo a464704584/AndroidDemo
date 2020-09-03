@@ -10,11 +10,29 @@ import androidx.annotation.Nullable;
 import com.cy.demo.BR;
 import com.cy.demo.R;
 import com.cy.demo.base.BaseFragment;
+import com.cy.demo.bean.Person;
 import com.cy.demo.databind.DataBindModule;
 import com.cy.demo.viewModule.RxViewModule;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.internal.operators.observable.ObservableFlatMap;
+import io.reactivex.internal.operators.observable.ObservableMap;
+import io.reactivex.observables.GroupedObservable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @创建者 CY
@@ -36,17 +54,15 @@ public class RxJavaFragment extends BaseFragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-
-
-
-
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
     }
 
     public void click(){
         Log.i(TAG,""+viewModule.text.get());
     }
+
+
+
 }
